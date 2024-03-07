@@ -3,7 +3,7 @@
 ## Introduction
 
 Get into game solo or with up to 5 friends and check your knowledge about various topics! Each of 10 rounds has limited time so act fast, but if you can get correct answer three times in row you'll become "on fire" and everyone will see who rocks! Score multiplies with every passed round, even if you fall back early, there's still a chance to get back in game when your opponent slips up!
-
+Check out this game [HERE](https://quizgame.lol/) :)
 ---
 ## Features
 
