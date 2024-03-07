@@ -1,4 +1,5 @@
-﻿using QuizGame.Models;
+﻿using System.Text;
+using QuizGame.Models;
 using QuizGame.Models.Requests;
 
 namespace QuizGame.Services;
@@ -6,19 +7,29 @@ namespace QuizGame.Services;
 public class QuestionUploaderService
 {
     private readonly DataBaseContext _dbContextContext;
-    
+
     public QuestionUploaderService(DataBaseContext dataBaseContext)
     {
         _dbContextContext = dataBaseContext;
     }
-    
-    //podzielić na funkcje
-    public void UpdateRecordsFromFile()
+
+    public Task UpdateRecordsFromFile(IFormFile file)
     {
-        using var sr = new StreamReader("C:\\questions.txt");
-        string? line = sr.ReadLine();
+        var result = new StringBuilder();
+        using (var reader = new StreamReader(file.OpenReadStream()))
+        {
+            while (reader.Peek() >= 0)
+            {
+                result.AppendLine(reader.ReadLine());
+            }
+        }
+        
+        var srd = new StringReader(result.ToString());
+        string? line = srd.ReadLine();
+        
         while (line != null)
         {
+            Console.WriteLine(line);
             string[] wordsInLine = line.Split(',');
             var question = new Question();
             var category = _dbContextContext.Categories.FirstOrDefault(c => c.Name == wordsInLine[0]);
@@ -32,27 +43,28 @@ public class QuestionUploaderService
             {
                 question.Category = category;
                 question.Content = wordsInLine[1];
-                for (int i = 0; i <=3; i++)
+                for (int i = 0; i <= 3; i++)
                 {
                     var answer = new Answer();
                     answer.Content = wordsInLine[2 + i];
                     question.Answers.Add(answer);
                     _dbContextContext.Answers.Add(answer);
-                    _dbContextContext.SaveChanges();
                 }
-
+                _dbContextContext.Questions.Add(question);
+                _dbContextContext.SaveChanges();
                 foreach (var answer in question.Answers)
                 {
                     if (answer.Content == wordsInLine[6])
                     {
                         question.CorrectAnswer =
-                            _dbContextContext.Answers.FirstOrDefault(e => answer.Content == e.Content);
+                            _dbContextContext.Answers.FirstOrDefault(e =>
+                                answer.Content == e.Content && answer.AlignedQuestion.Id == question.Id);
                     }
                 }
-                _dbContextContext.Questions.Add(question);
                 _dbContextContext.SaveChanges();
             }
-            line = sr.ReadLine();
+            line = srd.ReadLine();
         }
+        return Task.CompletedTask;
     }
 }

@@ -8,4 +8,5 @@ public class Round
     public int RoundTimer { get; set; }
     public bool IsRoundOngoing { get; set; }
     public bool IsRoundEnding { get; set; }
+    public int RoundBreakTimer { get; set; }
 }

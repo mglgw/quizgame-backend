@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using NLog;
 using NLog.Web;
 using QuizGame.Hubs;
+using QuizGame.Interfaces;
 using QuizGame.Models.Requests;
 using QuizGame.Services;
 
@@ -18,7 +19,7 @@ builder.Services.AddControllers()
     );
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddScoped<PlayerService>();
 builder.Services.AddScoped<IGameSessionService, GameSessionService>();
 builder.Services.AddDbContext<DataBaseContext>();
 builder.Services.AddScoped<QuestionUploaderService>(); //interfejs
@@ -37,7 +38,7 @@ builder.Services.AddCors(options =>
 });
 
 #endregion
-var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
@@ -46,19 +47,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
     app.UseDeveloperExceptionPage();
 }
-try
-{
-    app.UseCors(myAllowSpecificOrigins);
-    app.MapHub<GameHub>("/quiz"); //interfejs?
-    app.MapControllers();
-    app.Run();
-}
-catch (Exception e)
-{
-    logger.Error(e, "Stopped program because of exception");
-    throw;
-}
-finally
-{
-   NLog.LogManager.Shutdown();
-}
+
+app.UseCors(myAllowSpecificOrigins);
+app.MapHub<GameHub>("/quiz/quizhub");
+app.MapControllers();
+app.Run();
+    
+LogManager.Shutdown();

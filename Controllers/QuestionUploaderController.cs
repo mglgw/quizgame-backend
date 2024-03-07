@@ -4,7 +4,7 @@ using QuizGame.Services;
 namespace QuizGame.Controllers;
 
 [ApiController]
-[Route("api/quiz")] //nauczyć się o RESTcie
+[Route("api/quizuploader")] //nauczyć się o RESTcie
 public class QuestionUploaderController : ControllerBase
 {
     private readonly QuestionUploaderService _questionUploader;
@@ -16,9 +16,9 @@ public class QuestionUploaderController : ControllerBase
 
     [ActionName("AddQuestions")]
     [HttpPost]
-    public IActionResult UpdateRecords() //plik jako stream pewnie albo bitowy
+    public async Task<IActionResult> UpdateRecords(IFormFile file) //plik jako stream pewnie albo bitowy
     {
-        _questionUploader.UpdateRecordsFromFile();
+        await _questionUploader.UpdateRecordsFromFile(file);
         return Ok();
     }
 }

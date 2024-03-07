@@ -10,4 +10,5 @@ public class Player
     public bool IsWinner { get; set; }
     public bool IsReady { get; set; }
     public int Streak { get; set; }
+    public DateTime LastActivity { get; set; } = DateTime.UtcNow;
 }

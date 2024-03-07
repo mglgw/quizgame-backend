@@ -11,4 +11,6 @@ public interface IGameHub
     Task SendInfoAboutRoundExpiration(bool roundExpired);
     Task SendGameSessionInfo(GameSessionViewModel gameSessionViewModel);
     Task SendRoundInfo(RoundViewModel roundViewModel);
+    Task SendMessageToPlayers(string message);
+    Task SendInfoAboutLobbyWipe(bool wipeRound);
 }

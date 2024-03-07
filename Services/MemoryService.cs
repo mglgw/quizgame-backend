@@ -14,6 +14,7 @@ public class MemoryService
        GameSessions.TryAdd(guid, gameSession);
        GameSessionsByInvCode.TryAdd(gameSession.InvitationCode, gameSession);
     }
+    
     public void AddPlayer(Player player, Guid guid)
     {
         Players.TryAdd(guid, player);
@@ -22,7 +23,11 @@ public class MemoryService
     public void DeleteGameSession(GameSession gameSession)
     {
         GameSessions.TryRemove(gameSession.Id, out var gs);
-        
+        GameSessionsByInvCode.Remove(gameSession.InvitationCode);
+    }
+    public void DeletePlayerFromList(Player player)
+    {
+        Players.Remove(player.Id);
     }
 
 }
